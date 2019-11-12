@@ -34,12 +34,22 @@ module FIFO(
     reg [DATA_WIDTH-1:0] fifo_mem [0:FIFO_DEPTH-1]; // To store the elements in the FIFO
     reg [FIFO_DEPTH-1:0] write_ptr;
     reg [FIFO_DEPTH-1:0] read_ptr;
+    reg [FIFO_DEPTH-1:0] next_write_ptr;
+
+    wire overrun;
+    wire underrun;
+
+    assign next_write_ptr = write_ptr + 1'b1;
+    assign full = (next_write_ptr == read_ptr);
+    assign empty = (write_ptr == read_ptr);
 
     // Reset Logic
     always @(posedge clk) begin
         if (~ reset) begin
             write_ptr <= 0;
             read_ptr <= 0;
+            overrun <= 0;
+            underrun <= 0;
         end
     end
 
@@ -50,7 +60,35 @@ module FIFO(
         end
     end
 
+    // Read Logic
+    always @(posedge clk) begin
+        if (re) begin
+            data_out <= fifo_mem[read_ptr];
+        end
+    end
 
+    // Write Pointer Update Logic
+    always @(posedge clk) begin
+        if (we) begin
+            if ((!full)||(re)) begin
+                write_ptr <= write_ptr + 1'b1;
+            end
+            else begin
+                overrun <= 1;
+            end
+        end
+    end
 
+    // Read Pointer Update Logic
+    always @(posedge clk) begin
+        if (re) begin
+            if (!empty) begin
+                read_ptr <= read_ptr + 1'b1;
+            end
+            else begin
+                underrun <= 1;
+            end
+        end
+    end 
 
 endmodule // FIFO
