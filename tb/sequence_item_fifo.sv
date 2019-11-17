@@ -12,6 +12,8 @@ class fifo_seq_item extends uvm_sequence_item;
     logic re, we;
     logic full, empty;
 
+    realtime timestamp
+
     function new(string name = "fifo_seq_item");
         super.new(name);
     endfunction //new()
@@ -26,5 +28,5 @@ class fifo_seq_item extends uvm_sequence_item;
         `uvm_field_int(full, UVM_ALL_ON)
         `uvm_field_int(empty, UVM_ALL_ON)
     `uvm_object_utils_end
-    
+
 endclass //fifo_seq_item extends uvm_sequence_item
