@@ -20,7 +20,7 @@ class fifo_driver extends uvm_driver #(fifo_seq_item);
 
     function void connect_phase(uvm_phase phase);
         //TODO: Needs to be updated when top level module is created
-        if (!uvm_config_db #(virtual fifo_if)::get (this, "uvm_test_top", "fifoif", this.driver_if)) begin
+        if (!uvm_config_db #(virtual fifo_if)::get (this, "uvm_test_top", "fifo_if", this.driver_if)) begin
 			`uvm_error ("NOVIF", "Virtual Interface for FIFO not found!!")
 		end
     endfunction //connect_phase
@@ -40,6 +40,7 @@ class fifo_driver extends uvm_driver #(fifo_seq_item);
                         driver_if.re <= 0;
                         driver_if.we <= 0;
                         driver_if.reset_n <= req.reset_n;
+                        driver_if.data_in <= req.data_in;
                         repeat(3) @(posedge driver_if.clk) #1;
                         driver_if.reset_n <= 1;
                         @(posedge driver_if.clk) #1 
