@@ -12,7 +12,9 @@ class fifo_seq_item extends uvm_sequence_item;
     logic re, we;
     logic full, empty;
 
-    realtime timestamp
+    realtime timestamp;
+
+    enum{Reset, Write, Read, Empty, Full}command;
 
     function new(string name = "fifo_seq_item");
         super.new(name);
